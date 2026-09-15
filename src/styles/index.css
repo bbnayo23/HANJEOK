@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens (섹션 26). Tailwind v4는 @theme에 정의한 값을 그대로
+ * 유틸리티 클래스로 만들어주므로 별도 JS 토큰 레이어를 두지 않는다.
+ * spacing / typography / shadow는 Tailwind 기본 스케일을 그대로 쓴다.
+ */
+@theme {
+  /* colors — 의미 기반 (spec: background/surface/textPrimary/textSecondary/border) */
+  --color-background: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-ink: #1f2421; /* textPrimary */
+  --color-ink-muted: #5b6660; /* textSecondary */
+  --color-line: #e5e7e4; /* border */
+  --color-primary: #2f6e51;
+  --color-success: #3da35d;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+
+  /* radius (spec: 8 / 12 / 16 / 20) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-ink);
+}
