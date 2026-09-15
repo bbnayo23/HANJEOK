@@ -1,0 +1,111 @@
+import type { Landmark } from '../types/landmark'
+
+// 대표 명소 후보 (섹션 11). MVP는 서울 인근으로 한정한다 (섹션 2) — 한강공원
+// 뿐 아니라 관광지·데이트 코스로 많이 찾는 곳까지 포함한다.
+export const MOCK_LANDMARKS: Landmark[] = [
+  {
+    id: 'landmark-yeouido',
+    name: '여의도 한강공원',
+    latitude: 37.5285,
+    longitude: 126.9327,
+    category: '한강공원',
+  },
+  {
+    id: 'landmark-banpo',
+    name: '반포 한강공원',
+    latitude: 37.5104,
+    longitude: 126.9966,
+    category: '한강공원',
+  },
+  {
+    id: 'landmark-mangwon',
+    name: '망원 한강공원',
+    latitude: 37.5556,
+    longitude: 126.9013,
+    category: '한강공원',
+  },
+  {
+    id: 'landmark-ttukseom',
+    name: '뚝섬 한강공원',
+    latitude: 37.5303,
+    longitude: 127.0669,
+    category: '한강공원',
+  },
+  {
+    id: 'landmark-jamsil',
+    name: '잠실 한강공원',
+    latitude: 37.5197,
+    longitude: 127.0822,
+    category: '한강공원',
+  },
+  {
+    id: 'landmark-gyeongbokgung',
+    name: '경복궁',
+    latitude: 37.5796,
+    longitude: 126.977,
+    category: '고궁',
+  },
+  {
+    id: 'landmark-bukchon',
+    name: '북촌한옥마을',
+    latitude: 37.5826,
+    longitude: 126.9831,
+    category: '한옥마을',
+  },
+  {
+    id: 'landmark-ikseondong',
+    name: '익선동 한옥거리',
+    latitude: 37.573,
+    longitude: 126.9915,
+    category: '골목상권',
+  },
+  {
+    id: 'landmark-seongsu',
+    name: '성수동 카페거리',
+    latitude: 37.5445,
+    longitude: 127.0559,
+    category: '카페거리',
+  },
+  {
+    id: 'landmark-hongdae',
+    name: '홍대 걷고싶은거리',
+    latitude: 37.5563,
+    longitude: 126.9237,
+    category: '번화가',
+  },
+  {
+    id: 'landmark-yeonnamdong',
+    name: '연남동 경의선숲길',
+    latitude: 37.5615,
+    longitude: 126.9257,
+    category: '공원',
+  },
+  {
+    id: 'landmark-itaewon',
+    name: '이태원',
+    latitude: 37.5347,
+    longitude: 126.9947,
+    category: '번화가',
+  },
+  {
+    id: 'landmark-namsan',
+    name: '남산서울타워',
+    latitude: 37.5512,
+    longitude: 126.9882,
+    category: '전망대',
+  },
+  {
+    id: 'landmark-seoulforest',
+    name: '서울숲',
+    latitude: 37.5433,
+    longitude: 127.0374,
+    category: '공원',
+  },
+  {
+    id: 'landmark-insadong',
+    name: '인사동',
+    latitude: 37.574,
+    longitude: 126.9857,
+    category: '전통거리',
+  },
+]
