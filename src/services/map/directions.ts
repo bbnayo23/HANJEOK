@@ -5,10 +5,11 @@ import type { Coordinates } from '../../utils/geo'
 // 이 파일만 바꾸면 된다 (섹션 4.1, services/map).
 const ROUTING_HOST = 'https://routing.openstreetmap.de'
 
-export type TravelMode = 'walking' | 'driving'
+export type TravelMode = 'walking' | 'cycling' | 'driving'
 
 const PROFILE_PATH: Record<TravelMode, string> = {
   walking: 'routed-foot/route/v1/foot',
+  cycling: 'routed-bike/route/v1/bike',
   driving: 'routed-car/route/v1/driving',
 }
 

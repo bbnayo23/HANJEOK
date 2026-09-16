@@ -1,25 +1,28 @@
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { useEffect } from 'react'
-import { MapContainer, Marker, Polyline, TileLayer, useMap } from 'react-leaflet'
+import { useEffect, useRef } from 'react'
+import { MapContainer, Marker, Polyline, Popup, TileLayer, useMap } from 'react-leaflet'
 
 import type { Route } from '../../services/map/directions'
 import type { Landmark } from '../../types/landmark'
 import type { Recommendation } from '../../types/recommendation'
 import type { Coordinates } from '../../utils/geo'
+import { toStarRating } from '../../utils/rating'
 
 // 실제 OpenStreetMap 타일 위에 대표 명소·추천 장소·내 위치를 정확한 좌표로
 // 표시한다 (섹션 9). API 키가 필요 없는 무료 지도라 지금 바로 붙일 수 있고,
 // 나중에 카카오맵/네이버지도로 교체할 때는 이 컴포넌트만 바꾸면 된다.
-// 마커에는 장소명보다 추천 점수를 우선 표시한다.
-function scoreMarkerIcon(score: number, active: boolean) {
-  const background = active ? '#2f6e51' : '#ffffff'
-  const color = active ? '#ffffff' : '#2f6e51'
+// 마커에는 장소명보다 별점을 우선 표시한다 — 가독성을 위해 raw 점수(0~100)
+// 대신 5점 만점 별점 숫자를 쓴다.
+function ratingMarkerIcon(score: number, selected: boolean) {
+  const background = selected ? '#2f6e51' : '#ffffff'
+  const color = selected ? '#ffffff' : '#1f2421'
+  const rating = toStarRating(score).toFixed(1)
   return L.divIcon({
     className: '',
-    html: `<span style="display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 6px;border-radius:9999px;background:${background};color:${color};font-size:12px;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.25);border:1px solid #2f6e51;">${score}</span>`,
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
+    html: `<span style="display:inline-flex;align-items:center;gap:2px;min-width:40px;height:26px;padding:0 8px;border-radius:9999px;background:${background};color:${color};font-size:13px;font-weight:700;box-shadow:0 1px 4px rgba(0,0,0,0.3);border:1.5px solid #2f6e51;white-space:nowrap;">★ ${rating}</span>`,
+    iconSize: [0, 26],
+    iconAnchor: [20, 13],
   })
 }
 
@@ -55,15 +58,52 @@ function FitBounds({ points }: { points: [number, number][] }) {
   return null
 }
 
+// 카드를 클릭해 장소를 선택하면 지도에서도 정확히 어디인지(장소 이름) 보여줘야
+// 한다 — 선택된 마커의 팝업을 자동으로 연다.
+function PlaceMarker({
+  recommendation,
+  selected,
+  onSelect,
+}: {
+  recommendation: Recommendation
+  selected: boolean
+  onSelect: () => void
+}) {
+  const markerRef = useRef<L.Marker>(null)
+
+  useEffect(() => {
+    if (selected) markerRef.current?.openPopup()
+  }, [selected])
+
+  return (
+    <Marker
+      ref={markerRef}
+      position={[recommendation.place.latitude, recommendation.place.longitude]}
+      icon={ratingMarkerIcon(recommendation.score, selected)}
+      eventHandlers={{ click: onSelect }}
+    >
+      <Popup>{recommendation.place.name}</Popup>
+    </Marker>
+  )
+}
+
 type MapViewProps = {
   landmark: Landmark
   recommendations: Recommendation[]
   userCoords: Coordinates | null
-  activePlaceId?: string
+  selectedPlaceId?: string
+  onSelectPlace?: (placeId: string) => void
   route?: Route | null
 }
 
-export function MapView({ landmark, recommendations, userCoords, activePlaceId, route }: MapViewProps) {
+export function MapView({
+  landmark,
+  recommendations,
+  userCoords,
+  selectedPlaceId,
+  onSelectPlace,
+  route,
+}: MapViewProps) {
   const points: [number, number][] = [
     [landmark.latitude, landmark.longitude],
     ...recommendations.map(
@@ -87,10 +127,11 @@ export function MapView({ landmark, recommendations, userCoords, activePlaceId, 
         <FitBounds points={points} />
         <Marker position={[landmark.latitude, landmark.longitude]} icon={landmarkMarkerIcon(landmark.name)} />
         {recommendations.map((recommendation) => (
-          <Marker
+          <PlaceMarker
             key={recommendation.place.id}
-            position={[recommendation.place.latitude, recommendation.place.longitude]}
-            icon={scoreMarkerIcon(recommendation.score, recommendation.place.id === activePlaceId)}
+            recommendation={recommendation}
+            selected={recommendation.place.id === selectedPlaceId}
+            onSelect={() => onSelectPlace?.(recommendation.place.id)}
           />
         ))}
         {userCoords && <Marker position={[userCoords.latitude, userCoords.longitude]} icon={USER_MARKER_ICON} />}
