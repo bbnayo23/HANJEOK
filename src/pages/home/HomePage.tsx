@@ -1,12 +1,15 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { Badge } from '../../components/common/Badge'
 import { Button } from '../../components/common/Button'
 import { Chip } from '../../components/common/Chip'
 import { MapView } from '../../components/map/MapView'
+import { ExhibitionList } from '../../components/place/ExhibitionList'
 import { PlaceCard, type DirectionsInfo } from '../../components/place/PlaceCard'
 import { HOME_FILTER_OPTIONS, type HomeFilter } from '../../constants/home'
 import { useCityCongestion } from '../../features/places/hooks/useCityCongestion'
+import { useCurrentExhibitions } from '../../features/places/hooks/useCurrentExhibitions'
 import { useLandmarks } from '../../features/places/hooks/useLandmarks'
 import { useRecommendations } from '../../features/recommendation/hooks/useRecommendations'
 import { useDirections } from '../../hooks/useDirections'
@@ -19,6 +22,7 @@ import { useUserStore } from '../../store/userStore'
 import type { Landmark } from '../../types/landmark'
 import type { Recommendation } from '../../types/recommendation'
 import { haversineDistanceMeters } from '../../utils/geo'
+import { matchesPreference } from '../../utils/preference'
 
 const CROWD_TONE: Record<CrowdLevel, 'success' | 'warning' | 'danger'> = {
   low: 'success',
@@ -26,10 +30,14 @@ const CROWD_TONE: Record<CrowdLevel, 'success' | 'warning' | 'danger'> = {
   high: 'danger',
 }
 
-function findNearestLandmark(landmarks: Landmark[], coords: { latitude: number; longitude: number }) {
+function findNearestLandmark(
+  landmarks: Landmark[],
+  coords: { latitude: number; longitude: number },
+) {
   return landmarks.reduce<Landmark | null>((nearest, landmark) => {
     if (!nearest) return landmark
-    const isCloser = haversineDistanceMeters(coords, landmark) < haversineDistanceMeters(coords, nearest)
+    const isCloser =
+      haversineDistanceMeters(coords, landmark) < haversineDistanceMeters(coords, nearest)
     return isCloser ? landmark : nearest
   }, null)
 }
@@ -42,6 +50,7 @@ function formatUpdatedAt(timestamp: number) {
 // 한강뿐 아니라 서울 전역의 명소를 다루므로, 지역 선택이 곧 "선택 지역"
 // 상태(섹션 27)이고 exploreStore에 둔다.
 export function HomePage() {
+  const navigate = useNavigate()
   const user = useUserStore((state) => state.user)
   const [filter, setFilter] = useState<HomeFilter>('all')
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null)
@@ -64,11 +73,14 @@ export function HomePage() {
     refetch,
   } = useRecommendations()
   const directions = useDirections()
+  const exhibitions = useCurrentExhibitions()
 
   // 명시적으로 선택한 지역이 없으면 내 위치에서 가장 가까운 명소, 위치가
   // 없으면 첫 번째 명소를 기본값으로 쓴다 (거부해도 이용 가능해야 함 — 섹션 23).
-  const defaultLandmark = (coords ? findNearestLandmark(landmarks, coords) : landmarks[0]) ?? landmarks[0]
-  const selectedLandmark = landmarks.find((landmark) => landmark.id === selectedLandmarkId) ?? defaultLandmark
+  const defaultLandmark =
+    (coords ? findNearestLandmark(landmarks, coords) : landmarks[0]) ?? landmarks[0]
+  const selectedLandmark =
+    landmarks.find((landmark) => landmark.id === selectedLandmarkId) ?? defaultLandmark
 
   // 서울시 실시간 도시데이터(citydata) — 매칭이 확인된 명소에서만 동작한다.
   // 나머지 명소는 undefined 그대로라 목데이터 뱃지만 보인다 (섹션: 없는
@@ -80,14 +92,31 @@ export function HomePage() {
   const handleRequestLocation = () => {
     getCurrentLocation()
       .then(setCoords)
-      .catch((error: Error) => setLocationStatus(error.message === 'unsupported' ? 'unsupported' : 'denied'))
+      .catch((error: Error) =>
+        setLocationStatus(error.message === 'unsupported' ? 'unsupported' : 'denied'),
+      )
   }
 
-  const filtered = (recommendations ?? []).filter(
-    (recommendation) =>
-      recommendation.landmark.id === selectedLandmark?.id &&
-      (filter === 'all' || recommendation.place.category === filter),
+  const inSelectedArea = (recommendations ?? []).filter(
+    (recommendation) => recommendation.landmark.id === selectedLandmark?.id,
   )
+
+  // 결과가 없는 필터는 눌러봐야 빈 화면만 나오므로 아예 보여주지 않는다.
+  const availableFilters = HOME_FILTER_OPTIONS.filter(
+    (option) =>
+      option.id === 'all' ||
+      inSelectedArea.some((recommendation) => recommendation.place.category === option.id),
+  )
+
+  // 온보딩에서 고른 취향에 맞는 곳을 먼저, 그다음 점수 높은 순으로 보여준다.
+  const filtered = inSelectedArea
+    .filter((recommendation) => filter === 'all' || recommendation.place.category === filter)
+    .sort((a, b) => {
+      const preferenceDiff =
+        Number(matchesPreference(b.place, user.preferences)) -
+        Number(matchesPreference(a.place, user.preferences))
+      return preferenceDiff !== 0 ? preferenceDiff : b.score - a.score
+    })
 
   const handleSelectPlace = (placeId: string) => {
     setSelectedPlaceId(placeId)
@@ -129,7 +158,9 @@ export function HomePage() {
         <header className="flex items-start justify-between gap-3">
           <div>
             <p className="text-sm text-ink-muted">현재 지역</p>
-            <h1 className="text-lg font-semibold text-ink">{selectedLandmark?.name ?? '불러오는 중...'}</h1>
+            <h1 className="text-lg font-semibold text-ink">
+              {selectedLandmark?.name ?? '불러오는 중...'}
+            </h1>
           </div>
           {locationStatus === 'idle' && (
             <Button variant="secondary" onClick={handleRequestLocation} className="shrink-0">
@@ -167,7 +198,7 @@ export function HomePage() {
 
         <div className="flex items-center justify-between gap-2">
           <div className="flex gap-2 overflow-x-auto pb-1">
-            {HOME_FILTER_OPTIONS.map((option) => (
+            {availableFilters.map((option) => (
               <Chip
                 key={option.id}
                 selected={filter === option.id}
@@ -189,7 +220,9 @@ export function HomePage() {
         </div>
 
         {dataUpdatedAt > 0 && (
-          <p className="-mt-2 text-xs text-ink-muted">마지막 업데이트 {formatUpdatedAt(dataUpdatedAt)}</p>
+          <p className="-mt-2 text-xs text-ink-muted">
+            마지막 업데이트 {formatUpdatedAt(dataUpdatedAt)}
+          </p>
         )}
 
         {selectedLandmark && (
@@ -204,12 +237,23 @@ export function HomePage() {
         )}
 
         <section className="flex flex-col gap-3">
-          <h2 className="text-base font-semibold text-ink">오늘 가기 좋은 곳</h2>
+          <div className="flex flex-col gap-1">
+            <h2 className="text-base font-semibold text-ink">오늘 가기 좋은 곳</h2>
+            {/* 사용자가 "왜 이 곳들이 여기 있는지" 알 수 있도록 선정 기준을 밝힌다. */}
+            <p className="text-xs text-ink-muted">
+              핫플 대신 그 근처에서 단골이 있고, 한적하고, 커피가 좋고, 앉아 있기 좋고, 분위기가
+              괜찮다고 여러 매체·블로그에서 꾸준히 언급되는 곳만 골라요.
+            </p>
+          </div>
 
           {isLoading && <p className="text-sm text-ink-muted">추천 장소를 불러오는 중...</p>}
 
           {!isLoading && filtered.length === 0 && (
-            <p className="text-sm text-ink-muted">조건에 맞는 장소가 아직 없어요.</p>
+            <p className="text-sm text-ink-muted">
+              {inSelectedArea.length === 0
+                ? '이 지역은 아직 확인된 숨은 장소가 없어요. 위에서 다른 지역을 골라보세요.'
+                : '조건에 맞는 장소가 아직 없어요.'}
+            </p>
           )}
 
           <div className="flex flex-col gap-3">
@@ -218,13 +262,22 @@ export function HomePage() {
                 key={recommendation.place.id}
                 recommendation={recommendation}
                 selected={recommendation.place.id === selectedPlaceId}
+                preferred={matchesPreference(recommendation.place, user.preferences)}
+                distanceFromMeMeters={
+                  coords ? haversineDistanceMeters(coords, recommendation.place) : undefined
+                }
                 onSelect={() => handleSelectPlace(recommendation.place.id)}
+                onOpenDetail={() => navigate(`/place/${recommendation.place.id}`)}
                 onShowDirections={(mode) => handleShowDirections(recommendation, mode)}
                 directionsInfo={directionsInfoFor(recommendation.place.id)}
               />
             ))}
           </div>
         </section>
+
+        {exhibitions.data && selectedLandmark && (
+          <ExhibitionList exhibitions={exhibitions.data} district={selectedLandmark.district} />
+        )}
       </div>
     </main>
   )

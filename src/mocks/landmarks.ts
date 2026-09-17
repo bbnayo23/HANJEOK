@@ -12,6 +12,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.52567,
     longitude: 126.93606,
     category: '한강공원',
+    district: '영등포구',
   },
   {
     id: 'landmark-banpo',
@@ -19,6 +20,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.50887,
     longitude: 126.99394,
     category: '한강공원',
+    district: '서초구',
   },
   {
     id: 'landmark-mangwon',
@@ -26,6 +28,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.55019,
     longitude: 126.90216,
     category: '한강공원',
+    district: '마포구',
   },
   {
     id: 'landmark-ttukseom',
@@ -33,6 +36,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.52983,
     longitude: 127.06811,
     category: '한강공원',
+    district: '광진구',
   },
   {
     id: 'landmark-jamsil',
@@ -40,6 +44,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.51757,
     longitude: 127.08433,
     category: '한강공원',
+    district: '송파구',
   },
   {
     id: 'landmark-yanghwa',
@@ -47,6 +52,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.54027,
     longitude: 126.89994,
     category: '한강공원',
+    district: '영등포구',
   },
   {
     id: 'landmark-nanji',
@@ -54,6 +60,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.56645,
     longitude: 126.87686,
     category: '한강공원',
+    district: '마포구',
   },
   {
     id: 'landmark-ichon',
@@ -61,6 +68,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.51851,
     longitude: 126.96736,
     category: '한강공원',
+    district: '용산구',
   },
   {
     id: 'landmark-jamwon',
@@ -68,6 +76,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.52507,
     longitude: 127.01599,
     category: '한강공원',
+    district: '서초구',
   },
   {
     id: 'landmark-gwangnaru',
@@ -75,6 +84,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.54087,
     longitude: 127.11568,
     category: '한강공원',
+    district: '강동구',
   },
   {
     id: 'landmark-seonyudo',
@@ -82,6 +92,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.54342,
     longitude: 126.90032,
     category: '공원',
+    district: '영등포구',
   },
   {
     id: 'landmark-gyeongbokgung',
@@ -89,6 +100,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.57975,
     longitude: 126.97668,
     category: '고궁',
+    district: '종로구',
   },
   {
     id: 'landmark-bukchon',
@@ -96,6 +108,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.58239,
     longitude: 126.98586,
     category: '한옥마을',
+    district: '종로구',
   },
   {
     id: 'landmark-ikseondong',
@@ -103,6 +116,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.5735,
     longitude: 126.98985,
     category: '골목상권',
+    district: '종로구',
   },
   {
     id: 'landmark-seongsu',
@@ -110,6 +124,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.54418,
     longitude: 127.05062,
     category: '카페거리',
+    district: '성동구',
   },
   {
     id: 'landmark-hongdae',
@@ -117,6 +132,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.55676,
     longitude: 126.92374,
     category: '번화가',
+    district: '마포구',
   },
   {
     id: 'landmark-yeonnamdong',
@@ -124,6 +140,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.56266,
     longitude: 126.92261,
     category: '공원',
+    district: '마포구',
   },
   {
     id: 'landmark-itaewon',
@@ -131,6 +148,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.5345,
     longitude: 126.99437,
     category: '번화가',
+    district: '용산구',
   },
   {
     id: 'landmark-namsan',
@@ -138,6 +156,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.55127,
     longitude: 126.9883,
     category: '전망대',
+    district: '용산구',
   },
   {
     id: 'landmark-seoulforest',
@@ -145,6 +164,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.54359,
     longitude: 127.04474,
     category: '공원',
+    district: '성동구',
   },
   {
     id: 'landmark-insadong',
@@ -152,6 +172,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.57165,
     longitude: 126.98642,
     category: '전통거리',
+    district: '종로구',
   },
   {
     id: 'landmark-anyangcheon',
@@ -159,6 +180,7 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.52456,
     longitude: 126.87512,
     category: '하천',
+    district: '양천구',
   },
   {
     id: 'landmark-dorimcheon',
@@ -166,5 +188,6 @@ export const MOCK_LANDMARKS: Landmark[] = [
     latitude: 37.51445,
     longitude: 126.88268,
     category: '하천',
+    district: '구로구',
   },
 ]

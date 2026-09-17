@@ -131,6 +131,36 @@ const RECOMMENDATION_DETAILS: { placeId: string; score: number; reason: string }
     reason: '빵을 사서 바로 안양천 산책로로 걸어나가기 좋아요.',
   },
   {
+    placeId: 'place-ttukseom-cafe',
+    score: 85,
+    reason: '한강공원 매점 인파에서 벗어나 골목에서 조용히 쉴 수 있어요.',
+  },
+  {
+    placeId: 'place-mangwon-bakery',
+    score: 86,
+    reason: '빵이 갓 나오는 시간대라 향이 좋고, 망원시장 쪽보다 한적해요.',
+  },
+  {
+    placeId: 'place-seongsu-cafe3',
+    score: 87,
+    reason: '마당이 있어 카페거리 한복판보다 훨씬 여유롭게 앉아 있을 수 있어요.',
+  },
+  {
+    placeId: 'place-itaewon-rooftop',
+    score: 86,
+    reason: '이태원 대로 대신 언덕 위 루프탑에서 조용히 뷰를 볼 수 있어요.',
+  },
+  {
+    placeId: 'place-seoulforest-nightview',
+    score: 88,
+    reason: '남산·63빌딩 같은 유명 야경 명소보다 한적하게 한강 야경을 볼 수 있어요.',
+  },
+  {
+    placeId: 'place-insadong-walk',
+    score: 87,
+    reason: '인사동 쇼핑거리 인파에서 벗어나 성곽길을 따라 조용히 걷기 좋아요.',
+  },
+  {
     placeId: 'place-dorimcheon-cafe',
     score: 84,
     reason: '신도림 대로변 프랜차이즈와 달리 조용히 앉아 있을 수 있어요.',

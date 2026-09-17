@@ -7,3 +7,11 @@ import type { Recommendation } from '../../types/recommendation'
 export function fetchRecommendations(): Promise<Recommendation[]> {
   return Promise.resolve(buildRecommendations(new Date()))
 }
+
+// GET /places/:id (섹션 28)에 대응한다. 없는 id면 null을 준다.
+export function fetchRecommendation(placeId: string): Promise<Recommendation | null> {
+  const found = buildRecommendations(new Date()).find(
+    (recommendation) => recommendation.place.id === placeId,
+  )
+  return Promise.resolve(found ?? null)
+}

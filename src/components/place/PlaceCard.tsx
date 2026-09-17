@@ -6,6 +6,7 @@ import { CATEGORY_EMOJI } from '../../constants/home'
 import type { TravelMode } from '../../services/map/directions'
 import type { CrowdLevel } from '../../types/crowd'
 import type { Recommendation } from '../../types/recommendation'
+import { naverMapSearchUrl } from '../../utils/externalLinks'
 import { formatDistanceMeters, formatDurationSeconds } from '../../utils/geo'
 import { toStarRating } from '../../utils/rating'
 
@@ -34,7 +35,10 @@ export type DirectionsInfo =
 type PlaceCardProps = {
   recommendation: Recommendation
   selected?: boolean
+  preferred?: boolean
+  distanceFromMeMeters?: number
   onSelect: () => void
+  onOpenDetail: () => void
   onShowDirections: (mode: TravelMode) => void
   directionsInfo?: DirectionsInfo
 }
@@ -60,11 +64,14 @@ function DirectionsResult({ info }: { info: DirectionsInfo }) {
 export function PlaceCard({
   recommendation,
   selected = false,
+  preferred = false,
+  distanceFromMeMeters,
   onSelect,
+  onOpenDetail,
   onShowDirections,
   directionsInfo,
 }: PlaceCardProps) {
-  const { place, crowd, score, distanceLabel, reason } = recommendation
+  const { place, landmark, crowd, score, distanceLabel, reason } = recommendation
   const crowdInfo = CROWD_LABEL[crowd.crowdLevel]
 
   // 카드 자체를 누르면 지도에서 선택되게 한다. 내부에 길찾기 버튼이 있어
@@ -75,6 +82,9 @@ export function PlaceCard({
       role="button"
       tabIndex={0}
       aria-pressed={selected}
+      // 이름을 지정하지 않으면 카드 안 텍스트가 전부 접근성 이름이 되어
+      // 내부 버튼들과 구분되지 않는다.
+      aria-label={`${place.name} 지도에서 보기`}
       onClick={onSelect}
       onKeyDown={(event) => {
         if (event.key !== 'Enter' && event.key !== ' ') return
@@ -92,16 +102,32 @@ export function PlaceCard({
         {CATEGORY_EMOJI[place.category]}
       </div>
       <div className="flex flex-col gap-2 p-4">
-        <h3 className="font-semibold text-ink">{place.name}</h3>
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="font-semibold text-ink">{place.name}</h3>
+          {preferred && <Badge tone="success">취향 맞춤</Badge>}
+        </div>
         <StarRating rating={toStarRating(score)} />
         <div className="flex flex-wrap items-center gap-2">
           <Badge tone={crowdInfo.tone}>{crowdInfo.text}</Badge>
           <span className="text-xs text-ink-muted">{distanceLabel}</span>
         </div>
+        {distanceFromMeMeters !== undefined && (
+          <p className="text-xs text-ink-muted">
+            내 위치에서 직선 {formatDistanceMeters(distanceFromMeMeters)}
+          </p>
+        )}
         <p className="text-sm text-ink-muted">{reason}</p>
 
         <div className="mt-1 flex flex-col gap-1.5">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <Button
+              onClick={(event) => {
+                event.stopPropagation()
+                onOpenDetail()
+              }}
+            >
+              자세히 보기
+            </Button>
             <Button
               variant="secondary"
               onClick={(event) => {
@@ -120,6 +146,16 @@ export function PlaceCard({
             >
               길찾기 (자전거)
             </Button>
+            {/* 영업시간·메뉴·최신 리뷰는 우리가 갖고 있지 않으니 네이버 지도로 연결한다. */}
+            <a
+              href={naverMapSearchUrl(place, landmark)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(event) => event.stopPropagation()}
+              className="rounded-md border border-line bg-surface px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              네이버에서 보기
+            </a>
           </div>
           {directionsInfo && <DirectionsResult info={directionsInfo} />}
         </div>
