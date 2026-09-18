@@ -12,6 +12,15 @@ import type { Place } from '../types/place'
 //     확인 전까지 UI에 노출하지 않는다 (없는 정보를 있다고 하지 않기 위해).
 //   - reviewCount는 이 앱 자체의 리뷰 수라서 아직 0이다 (리뷰 기능 미구현).
 //   - scores는 출처에서 언급된 특징(조용함/뷰/머물기 좋음)을 반영한 추정치다.
+//
+// 신도림·구로디지털단지·가산디지털단지 6곳(2026-09-18)은 출처가 다르다.
+// 상호와 좌표는 OpenStreetMap에 등록된 실제 가게에서 가져왔지만, 매거진·블로그
+// 소개가 없어 한적함·머물기 좋음을 확인할 근거가 없다. 그래서 scores를 다른
+// 곳처럼 80~90대로 올리지 않고 70대 중립값으로 두고, description에는 OSM에서
+// 확인 가능한 업종과 위치만 적었다.
+// ponytail: OSM 존재 여부만 검증한 데이터. 실제로 가보거나 소개글이 확인되면
+// scores와 description을 그때 올린다.
+
 export const MOCK_PLACES: Place[] = [
   {
     id: 'place-yeouido-cafe',
@@ -396,15 +405,93 @@ export const MOCK_PLACES: Place[] = [
     reviewCount: 0,
   },
   {
-    id: 'place-dorimcheon-cafe',
+    id: 'place-sindorim-cafe',
     name: '히어로스터',
     latitude: 37.50671,
     longitude: 126.89237,
     category: 'cafe',
     description: '신도림역 인근의 조용한 로스터리 카페. 대로변 프랜차이즈와 달리 붐비지 않는다.',
-    nearbyLandmarkId: 'landmark-dorimcheon',
+    nearbyLandmarkId: 'landmark-sindorim',
     scores: { quiet: 84, view: 56, accessibility: 86, stay: 84, userRating: 84 },
     facilities: { parking: false, restroom: false, bench: false, cafeNearby: true },
+    photos: [],
+    reviewCount: 0,
+  },
+  {
+    id: 'place-sindorim-coffee',
+    name: 'for better coffee',
+    latitude: 37.50928,
+    longitude: 126.88777,
+    category: 'cafe',
+    description: '신도림역 남쪽 골목의 개인 로스터리 카페. 대로변 프랜차이즈 줄에서 벗어나 있다.',
+    nearbyLandmarkId: 'landmark-sindorim',
+    scores: { quiet: 74, view: 50, accessibility: 84, stay: 74, userRating: 74 },
+    facilities: { parking: false, restroom: false, bench: false, cafeNearby: true },
+    photos: [],
+    reviewCount: 0,
+  },
+  {
+    id: 'place-sindorim-gyudon',
+    name: '동경규동',
+    latitude: 37.50583,
+    longitude: 126.89102,
+    category: 'food',
+    description: '신도림역에서 도림천 쪽으로 내려가는 길의 규동집. 혼자 앉아 먹기 편하다.',
+    nearbyLandmarkId: 'landmark-sindorim',
+    scores: { quiet: 70, view: 44, accessibility: 78, stay: 62, userRating: 72 },
+    facilities: { parking: false, restroom: false, bench: false, cafeNearby: false },
+    photos: [],
+    reviewCount: 0,
+  },
+  {
+    id: 'place-guro-coffee',
+    name: '우지커피',
+    latitude: 37.48296,
+    longitude: 126.90077,
+    category: 'cafe',
+    description: '구로디지털단지역 먹자골목 안쪽의 개인 카페. 점심시간을 피하면 한산하다.',
+    nearbyLandmarkId: 'landmark-gurodigital',
+    scores: { quiet: 72, view: 46, accessibility: 86, stay: 74, userRating: 72 },
+    facilities: { parking: false, restroom: false, bench: false, cafeNearby: true },
+    photos: [],
+    reviewCount: 0,
+  },
+  {
+    id: 'place-guro-hansik',
+    name: '라디',
+    latitude: 37.48115,
+    longitude: 126.89893,
+    category: 'food',
+    description: '구로디지털단지역 서쪽 이면도로의 한식당. 큰길 체인점 밀집 구간에서 한 블록 떨어져 있다.',
+    nearbyLandmarkId: 'landmark-gurodigital',
+    scores: { quiet: 72, view: 44, accessibility: 76, stay: 66, userRating: 72 },
+    facilities: { parking: false, restroom: false, bench: false, cafeNearby: true },
+    photos: [],
+    reviewCount: 0,
+  },
+  {
+    id: 'place-gasan-coffee',
+    name: '블랙엔트리',
+    latitude: 37.48536,
+    longitude: 126.87985,
+    category: 'cafe',
+    description: '가산디지털단지 3단지 북쪽의 개인 커피집. 지식산업센터 안 프랜차이즈와 떨어져 있다.',
+    nearbyLandmarkId: 'landmark-gasandigital',
+    scores: { quiet: 74, view: 46, accessibility: 72, stay: 74, userRating: 72 },
+    facilities: { parking: false, restroom: false, bench: false, cafeNearby: true },
+    photos: [],
+    reviewCount: 0,
+  },
+  {
+    id: 'place-gasan-katsu',
+    name: '카츠바이혼',
+    latitude: 37.47863,
+    longitude: 126.88493,
+    category: 'food',
+    description: '가산디지털단지역 남동쪽의 돈카츠·카레집. 단지 한복판 점심 인파에서 조금 비켜나 있다.',
+    nearbyLandmarkId: 'landmark-gasandigital',
+    scores: { quiet: 70, view: 44, accessibility: 74, stay: 64, userRating: 74 },
+    facilities: { parking: false, restroom: false, bench: false, cafeNearby: false },
     photos: [],
     reviewCount: 0,
   },

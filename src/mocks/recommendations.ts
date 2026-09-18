@@ -161,9 +161,39 @@ const RECOMMENDATION_DETAILS: { placeId: string; score: number; reason: string }
     reason: '인사동 쇼핑거리 인파에서 벗어나 성곽길을 따라 조용히 걷기 좋아요.',
   },
   {
-    placeId: 'place-dorimcheon-cafe',
+    placeId: 'place-sindorim-cafe',
     score: 84,
     reason: '신도림 대로변 프랜차이즈와 달리 조용히 앉아 있을 수 있어요.',
+  },
+  {
+    placeId: 'place-sindorim-coffee',
+    score: 74,
+    reason: '역 앞 프랜차이즈 대신 골목 안 개인 로스터리예요. 아직 다녀와 확인하진 못했어요.',
+  },
+  {
+    placeId: 'place-sindorim-gyudon',
+    score: 72,
+    reason: '혼자 한 그릇 먹고 나오기 좋은 자리예요. 점심시간은 붐빌 수 있어요.',
+  },
+  {
+    placeId: 'place-guro-coffee',
+    score: 72,
+    reason: '단지 커피는 대부분 체인인데, 여긴 골목 안 개인 카페예요.',
+  },
+  {
+    placeId: 'place-guro-hansik',
+    score: 72,
+    reason: '역 앞 체인 밀집 구간에서 한 블록 들어간 한식당이에요.',
+  },
+  {
+    placeId: 'place-gasan-coffee',
+    score: 72,
+    reason: '지식산업센터 1층 프랜차이즈를 피해 걸어갈 만한 개인 커피집이에요.',
+  },
+  {
+    placeId: 'place-gasan-katsu',
+    score: 74,
+    reason: '단지 한복판 점심 줄에서 조금 비켜난 위치라 대기가 덜해요.',
   },
 ]
 

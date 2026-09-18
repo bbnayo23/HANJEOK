@@ -9,6 +9,7 @@ export const HOME_FILTER_OPTIONS: { id: HomeFilter; label: string }[] = [
   { id: 'view', label: '뷰' },
   { id: 'nature', label: '자연' },
   { id: 'cafe', label: '카페' },
+  { id: 'food', label: '맛집' },
   { id: 'sunset', label: '노을' },
   { id: 'nightview', label: '야경' },
 ]
@@ -20,6 +21,7 @@ export const CATEGORY_EMOJI: Record<PlaceCategory, string> = {
   view: '🌇',
   nature: '🍃',
   cafe: '☕',
+  food: '🍚',
   sunset: '🌅',
   nightview: '🌃',
 }

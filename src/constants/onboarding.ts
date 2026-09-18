@@ -15,6 +15,7 @@ export const PREFERENCE_OPTIONS: { id: Preference; label: string }[] = [
   { id: 'view', label: '멋진 뷰' },
   { id: 'walk', label: '산책' },
   { id: 'cafe', label: '카페' },
+  { id: 'food', label: '맛집' },
   { id: 'photo', label: '사진' },
   { id: 'sunset', label: '노을' },
   { id: 'nightview', label: '야경' },

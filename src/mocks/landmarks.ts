@@ -5,6 +5,10 @@ import type { Landmark } from '../types/landmark'
 // 좌표는 전부 OpenStreetMap Nominatim 지오코딩으로 실제 위치를 확인한 값이다
 // (2026-09-16). 확인되지 않은 곳은 넣지 않는다 — 강서 한강공원은 Nominatim에서
 // 조회되지 않아 제외했다.
+//
+// 신도림·구로디지털단지·가산디지털단지는 각 역 좌표로 확인했다 (2026-09-18).
+// 기존 '도림천 (신도림)'은 같은 지역을 가리키던 것이라 '신도림'으로 합쳤다.
+// 두 디지털단지는 아직 확인된 숨은 장소가 없어 빈 상태로 보인다.
 export const MOCK_LANDMARKS: Landmark[] = [
   {
     id: 'landmark-yeouido',
@@ -183,11 +187,27 @@ export const MOCK_LANDMARKS: Landmark[] = [
     district: '양천구',
   },
   {
-    id: 'landmark-dorimcheon',
-    name: '도림천 (신도림)',
-    latitude: 37.51445,
-    longitude: 126.88268,
-    category: '하천',
+    id: 'landmark-sindorim',
+    name: '신도림',
+    latitude: 37.51048,
+    longitude: 126.89021,
+    category: '번화가',
     district: '구로구',
+  },
+  {
+    id: 'landmark-gurodigital',
+    name: '구로디지털단지',
+    latitude: 37.48413,
+    longitude: 126.90248,
+    category: '업무지구',
+    district: '구로구',
+  },
+  {
+    id: 'landmark-gasandigital',
+    name: '가산디지털단지',
+    latitude: 37.48082,
+    longitude: 126.88164,
+    category: '업무지구',
+    district: '금천구',
   },
 ]
