@@ -20,7 +20,12 @@ import type { Place } from '../types/place'
 // 확인 가능한 업종과 위치만 적었다.
 // ponytail: OSM 존재 여부만 검증한 데이터. 실제로 가보거나 소개글이 확인되면
 // scores와 description을 그때 올린다.
-
+//
+// openingHours는 OSM에 opening_hours 태그가 있는 3곳에만 있다 (36곳 중). 나머지는
+// 확인이 안 돼 비워 뒀고, 그동안은 "닫혔다"고 단정하지 않는다 (utils/crowd.ts
+// isOpenNow). 상세 화면은 영업시간을 네이버 지도 링크로 넘긴다.
+// ponytail: 영업시간 출처가 OSM뿐이라 커버리지가 3/36이다. 구글 Places 같은
+// 영업시간 소스를 붙이면 그때 나머지를 채운다.
 export const MOCK_PLACES: Place[] = [
   {
     id: 'place-yeouido-cafe',
@@ -438,6 +443,7 @@ export const MOCK_PLACES: Place[] = [
     category: 'food',
     description: '신도림역에서 도림천 쪽으로 내려가는 길의 규동집. 혼자 앉아 먹기 편하다.',
     nearbyLandmarkId: 'landmark-sindorim',
+    openingHours: { open: '11:00', close: '20:30' },
     scores: { quiet: 70, view: 44, accessibility: 78, stay: 62, userRating: 72 },
     facilities: { parking: false, restroom: false, bench: false, cafeNearby: false },
     photos: [],
@@ -464,6 +470,7 @@ export const MOCK_PLACES: Place[] = [
     category: 'food',
     description: '구로디지털단지역 서쪽 이면도로의 한식당. 큰길 체인점 밀집 구간에서 한 블록 떨어져 있다.',
     nearbyLandmarkId: 'landmark-gurodigital',
+    openingHours: { open: '17:00', close: '24:00' },
     scores: { quiet: 72, view: 44, accessibility: 76, stay: 66, userRating: 72 },
     facilities: { parking: false, restroom: false, bench: false, cafeNearby: true },
     photos: [],
@@ -490,6 +497,7 @@ export const MOCK_PLACES: Place[] = [
     category: 'food',
     description: '가산디지털단지역 남동쪽의 돈카츠·카레집. 단지 한복판 점심 인파에서 조금 비켜나 있다.',
     nearbyLandmarkId: 'landmark-gasandigital',
+    openingHours: { open: '11:00', close: '21:00' },
     scores: { quiet: 70, view: 44, accessibility: 74, stay: 64, userRating: 74 },
     facilities: { parking: false, restroom: false, bench: false, cafeNearby: false },
     photos: [],

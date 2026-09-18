@@ -34,6 +34,12 @@ export type Place = {
     start: string
     end: string
   }
+  // 영업시간 ('HH:MM'). 확인된 곳만 채운다 — 모르면 undefined로 두고, 닫혔다고
+  // 단정하지 않는다. 문 닫은 시간에 혼잡도를 보여주지 않기 위해 필요하다.
+  openingHours?: {
+    open: string
+    close: string
+  }
   photos: string[]
   reviewCount: number
 }

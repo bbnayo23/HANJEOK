@@ -1,6 +1,6 @@
 import type { Recommendation } from '../types/recommendation'
 import { haversineDistanceMeters, toWalkingMinutes } from '../utils/geo'
-import { resolveCrowd } from '../utils/crowd'
+import { isOpenNow, resolveCrowd } from '../utils/crowd'
 import { MOCK_CROWD_PATTERNS } from './crowd'
 import { MOCK_LANDMARKS } from './landmarks'
 import { MOCK_PLACES } from './places'
@@ -223,7 +223,8 @@ export function buildRecommendations(now: Date): Recommendation[] {
     return {
       place,
       landmark,
-      crowd: resolveCrowd(pattern, now),
+      crowd: resolveCrowd(pattern, now, place),
+      closedNow: !isOpenNow(place, now),
       score: detail.score,
       distanceLabel,
       reason: detail.reason,

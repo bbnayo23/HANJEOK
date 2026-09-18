@@ -10,17 +10,12 @@ import { CATEGORY_EMOJI } from '../../constants/home'
 import { useRecommendation } from '../../features/recommendation/hooks/useRecommendations'
 import { useDirections } from '../../hooks/useDirections'
 import type { TravelMode } from '../../services/map/directions'
-import type { CrowdData, CrowdLevel } from '../../types/crowd'
+import type { CrowdData } from '../../types/crowd'
 import { useLocationStore } from '../../store/locationStore'
+import { crowdBadge } from '../../utils/crowdLabel'
 import { naverMapSearchUrl } from '../../utils/externalLinks'
 import { formatDistanceMeters, formatDurationSeconds } from '../../utils/geo'
 import { toStarRating } from '../../utils/rating'
-
-const CROWD_LABEL: Record<CrowdLevel, { text: string; tone: 'success' | 'warning' | 'danger' }> = {
-  low: { text: '혼잡도 낮음', tone: 'success' },
-  medium: { text: '혼잡도 보통', tone: 'warning' },
-  high: { text: '혼잡도 높음', tone: 'danger' },
-}
 
 const TRAVEL_MODE_LABEL: Record<TravelMode, string> = {
   walking: '도보',
@@ -74,8 +69,8 @@ export function PlaceDetailPage() {
   }
 
   const { place, landmark, crowd, score, distanceLabel, reason } = recommendation
-  const crowdInfo = CROWD_LABEL[crowd.crowdLevel]
-  const comparedText = comparedToAverageText(crowd)
+  const crowdInfo = crowdBadge(recommendation)
+  const comparedText = crowd ? comparedToAverageText(crowd) : null
 
   const handleDirections = (mode: TravelMode) => {
     setTravelMode(mode)
@@ -119,7 +114,15 @@ export function PlaceDetailPage() {
           <Card className="flex flex-col gap-2 p-4">
             <h2 className="text-sm font-semibold text-ink">현재 상태</h2>
             <div className="flex flex-wrap items-center gap-2">
-              <Badge tone={crowdInfo.tone}>{crowdInfo.text}</Badge>
+              {crowdInfo ? (
+                <Badge tone={crowdInfo.tone}>{crowdInfo.text}</Badge>
+              ) : (
+                // 심야처럼 근거가 되는 패턴 값이 없는 시간대. 빈 자리로 두지 않고
+                // 왜 안 보이는지 밝힌다.
+                <span className="text-sm text-ink-muted">
+                  이 시간대는 혼잡도 정보가 없어요.
+                </span>
+              )}
               {comparedText && <span className="text-sm text-ink-muted">{comparedText}</span>}
             </div>
             <p className="text-sm text-ink-muted">{reason}</p>

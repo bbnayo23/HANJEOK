@@ -10,6 +10,10 @@ const AREA_PENALTY: Record<CrowdLevel, number> = {
   high: 0.4,
 }
 
+// 문 닫은 곳은 "오늘 가기 좋은 곳" 맨 위에 있으면 안 된다. 목록에서 아예 빼지는
+// 않고(곧 열 수도 있으니) 뒤로 보낸다.
+const CLOSED_PENALTY = 100
+
 // 홈 목록 정렬 기준 (섹션 14 혼잡도 가중치). 고정 점수만으로 정렬하면 지역과
 // 취향이 같을 때 항상 같은 가게가 같은 순서로 나오므로, 지금 얼마나 붐비는지를
 // 빼서 순위를 매긴다.
@@ -18,5 +22,8 @@ const AREA_PENALTY: Record<CrowdLevel, number> = {
 // 혼잡도다. 매칭이 없는 지역은 'medium'으로 두고 장소별 시간대 패턴만 반영한다
 // (없는 데이터를 지어내지 않되, 최소한 시간대에 따라서는 달라지도록).
 export function liveScore(recommendation: Recommendation, areaLevel?: CrowdLevel): number {
-  return recommendation.score - recommendation.crowd.population * AREA_PENALTY[areaLevel ?? 'medium']
+  const { score, crowd, closedNow } = recommendation
+  // 심야처럼 혼잡도를 모르는 시간대에는 감점 없이 원래 점수로만 비교한다.
+  const crowdPenalty = crowd ? crowd.population * AREA_PENALTY[areaLevel ?? 'medium'] : 0
+  return score - crowdPenalty - (closedNow ? CLOSED_PENALTY : 0)
 }

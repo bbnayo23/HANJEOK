@@ -4,19 +4,14 @@ import { Card } from '../common/Card'
 import { StarRating } from '../common/StarRating'
 import { CATEGORY_EMOJI } from '../../constants/home'
 import type { TravelMode } from '../../services/map/directions'
-import type { CrowdLevel } from '../../types/crowd'
 import type { Recommendation } from '../../types/recommendation'
+import { crowdBadge } from '../../utils/crowdLabel'
 import { naverMapSearchUrl } from '../../utils/externalLinks'
 import { formatDistanceMeters, formatDurationSeconds } from '../../utils/geo'
 import { toStarRating } from '../../utils/rating'
 
 // 추천 카드 UI (섹션 21). 정보를 많이 넣지 않고 사진/이름/점수/혼잡도/거리/이유만
 // 보여준다. 혼잡도는 색상만이 아니라 항상 텍스트로도 전달한다 (섹션 33).
-const CROWD_LABEL: Record<CrowdLevel, { text: string; tone: 'success' | 'warning' | 'danger' }> = {
-  low: { text: '지금 한적해요', tone: 'success' },
-  medium: { text: '보통이에요', tone: 'warning' },
-  high: { text: '지금 붐벼요', tone: 'danger' },
-}
 
 const TRAVEL_MODE_LABEL: Record<TravelMode, string> = {
   walking: '도보',
@@ -71,8 +66,8 @@ export function PlaceCard({
   onShowDirections,
   directionsInfo,
 }: PlaceCardProps) {
-  const { place, landmark, crowd, score, distanceLabel, reason } = recommendation
-  const crowdInfo = CROWD_LABEL[crowd.crowdLevel]
+  const { place, landmark, score, distanceLabel, reason } = recommendation
+  const crowdInfo = crowdBadge(recommendation)
 
   // 카드 자체를 누르면 지도에서 선택되게 한다. 내부에 길찾기 버튼이 있어
   // <button>으로 감쌀 수 없으므로(버튼 안 버튼은 유효하지 않음) role/tabIndex로
@@ -108,7 +103,7 @@ export function PlaceCard({
         </div>
         <StarRating rating={toStarRating(score)} />
         <div className="flex flex-wrap items-center gap-2">
-          <Badge tone={crowdInfo.tone}>{crowdInfo.text}</Badge>
+          {crowdInfo && <Badge tone={crowdInfo.tone}>{crowdInfo.text}</Badge>}
           <span className="text-xs text-ink-muted">{distanceLabel}</span>
         </div>
         {distanceFromMeMeters !== undefined && (
