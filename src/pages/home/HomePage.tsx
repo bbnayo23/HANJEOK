@@ -23,6 +23,7 @@ import type { Landmark } from '../../types/landmark'
 import type { Recommendation } from '../../types/recommendation'
 import { haversineDistanceMeters } from '../../utils/geo'
 import { matchesPreference } from '../../utils/preference'
+import { liveScore } from '../../utils/ranking'
 
 const CROWD_TONE: Record<CrowdLevel, 'success' | 'warning' | 'danger'> = {
   low: 'success',
@@ -108,14 +109,19 @@ export function HomePage() {
       inSelectedArea.some((recommendation) => recommendation.place.category === option.id),
   )
 
-  // 온보딩에서 고른 취향에 맞는 곳을 먼저, 그다음 점수 높은 순으로 보여준다.
+  // 온보딩에서 고른 취향에 맞는 곳을 먼저, 그다음 "지금" 점수 높은 순으로
+  // 보여준다. liveScore는 혼잡도를 반영하므로 같은 지역이라도 시간대에 따라
+  // 순서가 바뀐다 (고정 score로 정렬하면 언제 봐도 같은 목록이 나온다).
+  const areaLevel = cityCongestion.data?.level
   const filtered = inSelectedArea
     .filter((recommendation) => filter === 'all' || recommendation.place.category === filter)
     .sort((a, b) => {
       const preferenceDiff =
         Number(matchesPreference(b.place, user.preferences)) -
         Number(matchesPreference(a.place, user.preferences))
-      return preferenceDiff !== 0 ? preferenceDiff : b.score - a.score
+      return preferenceDiff !== 0
+        ? preferenceDiff
+        : liveScore(b, areaLevel) - liveScore(a, areaLevel)
     })
 
   const handleSelectPlace = (placeId: string) => {
