@@ -11,8 +11,8 @@
 //
 // 주의: 경복궁을 실제 지역명 '경복궁'으로 바꾸면서, 인증키 없이 동작하던 sample
 // 키 경로('광화문·덕수궁')에 걸리는 명소가 없어졌다. 이제 실시간 혼잡도를 보려면
-// .env.local에 VITE_SEOUL_CITYDATA_KEY가 있어야 한다 (없으면 뱃지만 안 보이고
-// 나머지는 정상 동작).
+// 인증키가 있어야 한다 — 개발은 .env.local의 SEOUL_CITYDATA_KEY, 배포는 Vercel
+// 환경변수에 넣는다 (없으면 뱃지만 안 보이고 나머지는 정상 동작).
 export const LANDMARK_CITYDATA_AREA: Partial<Record<string, string>> = {
   'landmark-yeouido': '여의도',
   'landmark-banpo': '반포한강공원',

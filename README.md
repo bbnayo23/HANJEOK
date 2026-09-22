@@ -18,6 +18,8 @@ npm run format    # prettier
 npm run build     # 타입체크 + 빌드
 ```
 
+서울시 오픈 API 인증키는 `.env.local.example`을 `.env.local`로 복사해 채운다.
+
 ## 현재 상태 — Phase 2 (Mock 기반 UI, 온보딩 → 홈) + 지도/위치 일부 선행
 
 - Phase 1: Vite + React + TS 스캐폴드, ESLint/Prettier, 라우터·Provider 뼈대,
@@ -38,3 +40,33 @@ npm run build     # 타입체크 + 빌드
   SDK/공공데이터 연동(키 발급 시).
 
 폴더 구조와 각 단계 계획은 [프로젝트 스펙 문서](docs/SPEC.md)를 따른다.
+
+## 배포 (Vercel)
+
+정적 번들(`dist/`) + 서버리스 함수 하나(`api/seoul/[...path].ts`)로 이루어진다.
+
+**서울시 오픈 API 프록시가 필요한 이유** — citydata·문화행사 API는 HTTPS를
+지원하지 않아서, 앱을 HTTPS로 올리면 브라우저가 mixed content로 전부 막는다.
+그래서 브라우저는 같은 도메인의 `/api/seoul/...`을 부르고 서버가 대신 HTTP로
+호출한다. 인증키도 이 함수에서만 붙으므로 클라이언트 번들에 노출되지 않는다.
+개발 서버에서는 `vite.config.ts`가 **같은 핸들러**를 미들웨어로 붙여 동작을 맞춘다.
+
+1. https://vercel.com 에 GitHub 계정으로 로그인 → **Add New → Project** →
+   이 저장소 import. 프레임워크는 Vite로 자동 인식된다.
+2. **Environment Variables**에 `SEOUL_CITYDATA_KEY` = 발급받은 일반 인증키 추가
+   (Production/Preview/Development 모두 체크). 키가 없어도 배포는 되지만
+   실시간 혼잡도는 표시되지 않고 전시는 5건까지만 나온다.
+3. Deploy. 이후 `main`에 push하면 자동 재배포된다.
+
+`vercel.json`은 두 가지를 한다 — 함수 리전을 서울(`icn1`)로 고정하고,
+`/place/:id` 같은 경로로 직접 들어와도 404가 나지 않게 SPA fallback을 건다.
+
+## 폰에서 앱처럼 쓰기 (PWA)
+
+배포된 주소를 폰 브라우저로 열고 홈 화면에 추가하면 주소창 없는 전체화면으로 뜬다.
+
+- **아이폰**: Safari로 열고 → 공유 버튼 → "홈 화면에 추가". (Chrome 말고 Safari여야 한다)
+- **안드로이드**: Chrome으로 열면 설치 배너가 뜬다. 안 뜨면 ⋮ → "앱 설치".
+
+위치 권한은 HTTPS에서만 동작하므로, 개발 서버를 LAN IP로 열어 쓰는 방식으로는
+내 위치 기능이 동작하지 않는다.
