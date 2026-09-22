@@ -21,8 +21,79 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="HANJEOK" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- 로딩 화면 스타일은 여기 인라인으로 둔다. 별도 CSS 파일을 기다리면 그 사이
+         흰 화면이 보이는데, 그걸 없애려고 만든 화면이라 의미가 없어진다. -->
+    <style>
+      #splash {
+        position: fixed;
+        inset: 0;
+        /* Leaflet 지도 pane이 z-index 400을 쓴다. 로딩 화면이 사라지기 전에
+           지도가 뒤에서 그려지므로 그보다 확실히 위에 있어야 한다. */
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        background-color: #2f6e51;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        transition: opacity 320ms ease-out;
+      }
+      /* src/app/splash.ts가 이 속성을 켜서 페이드아웃시킨다. */
+      #splash[data-leaving='true'] {
+        opacity: 0;
+      }
+      #splash svg {
+        width: 72px;
+        height: 72px;
+      }
+      #splash p {
+        margin: 0;
+        color: #f7f7f5;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+      @keyframes splash-in {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      #splash > * {
+        animation: splash-in 400ms ease-out both;
+      }
+      #splash p {
+        animation-delay: 80ms;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #splash > * {
+          animation: none;
+        }
+      }
+    </style>
   </head>
   <body>
+    <!-- 번들이 도착하기 전부터 보이는 로딩 화면. 마크업을 여기 직접 두는 이유는
+         React가 마운트되기를 기다리면 그만큼 흰 화면이 보이기 때문이다. 지우는 건
+         src/app/splash.ts가 한다. -->
+    <div id="splash" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="#f7f7f5">
+        <path
+          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"
+        />
+      </svg>
+      <p>HANJEOK</p>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
